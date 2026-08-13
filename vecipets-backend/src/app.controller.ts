@@ -1,12 +1,17 @@
 import { Controller, Get } from '@nestjs/common';
-import { AppService } from './app.service';
 
 @Controller()
 export class AppController {
-  constructor(private readonly appService: AppService) {}
-
   @Get()
-  getHello(): string {
-    return this.appService.getHello();
+  getApiStatus() {
+    return {
+      message: 'API VeciPets funcionando correctamente',
+      version: 'v1',
+      status: 'ok',
+    };
+  }
+
+  getHello() {
+    return 'API VeciPets funcionando correctamente';
   }
 }
