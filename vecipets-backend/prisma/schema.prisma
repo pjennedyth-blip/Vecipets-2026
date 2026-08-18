@@ -39,21 +39,22 @@ model Role {
   descripcion String?
   createdAt   DateTime @default(now()) @map("created_at")
   updatedAt   DateTime @updatedAt @map("updated_at")
-  usuarios    User[]
+
+  usuarios User[]
 
   @@map("roles")
 }
 
 model User {
-  id             String         @id @default(uuid()) @db.Uuid
-  roleId         String         @map("role_id") @db.Uuid
-  nombreCompleto String         @map("nombre_completo") @db.VarChar(150)
-  email          String         @unique @db.VarChar(150)
-  passwordHash   String         @map("password_hash") @db.VarChar(255)
-  telefono       String         @db.VarChar(20)
-  activo         Boolean        @default(true)
-  createdAt      DateTime       @default(now()) @map("created_at")
-  updatedAt      DateTime       @updatedAt @map("updated_at")
+  id             String   @id @default(uuid()) @db.Uuid
+  roleId         String   @map("role_id") @db.Uuid
+  nombreCompleto String   @map("nombre_completo") @db.VarChar(150)
+  email          String   @unique @db.VarChar(150)
+  passwordHash   String   @map("password_hash") @db.VarChar(255)
+  telefono       String   @db.VarChar(20)
+  activo         Boolean  @default(true)
+  createdAt      DateTime @default(now()) @map("created_at")
+  updatedAt      DateTime @updatedAt @map("updated_at")
 
   role           Role           @relation(fields: [roleId], references: [id])
   mascotas       Pet[]
@@ -67,13 +68,13 @@ model User {
 }
 
 model Location {
-  id           String        @id @default(uuid()) @db.Uuid
-  direccion    String        @db.VarChar(255)
-  comuna       String        @db.VarChar(100)
-  barrio       String        @db.VarChar(100)
-  latitud      Decimal       @db.Decimal(10, 8)
-  longitud     Decimal       @db.Decimal(11, 8)
-  createdAt    DateTime      @default(now()) @map("created_at")
+  id        String   @id @default(uuid()) @db.Uuid
+  direccion String   @db.VarChar(255)
+  comuna    String   @db.VarChar(100)
+  barrio    String   @db.VarChar(100)
+  latitud   Decimal  @db.Decimal(10, 8)
+  longitud  Decimal  @db.Decimal(11, 8)
+  createdAt DateTime @default(now()) @map("created_at")
 
   reportes     Report[]
   refugios     Shelter[]
@@ -95,31 +96,31 @@ model Pet {
   createdAt       DateTime @default(now()) @map("created_at")
   updatedAt       DateTime @updatedAt @map("updated_at")
 
-  usuario         User     @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
-  reportes        Report[]
+  usuario  User     @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
+  reportes Report[]
 
   @@map("mascotas")
 }
 
 model Report {
-  id                  String         @id @default(uuid()) @db.Uuid
-  usuarioId           String         @map("usuario_id") @db.Uuid
-  mascotaId           String?        @map("mascota_id") @db.Uuid
-  ubicacionId         String         @map("ubicacion_id") @db.Uuid
+  id                  String       @id @default(uuid()) @db.Uuid
+  usuarioId           String       @map("usuario_id") @db.Uuid
+  mascotaId           String?      @map("mascota_id") @db.Uuid
+  ubicacionId         String       @map("ubicacion_id") @db.Uuid
   tipo                ReportType
-  estado              ReportStatus   @default(PENDIENTE)
-  titulo              String         @db.VarChar(150)
-  descripcion         String         @db.Text
-  fechaAcontecimiento DateTime       @map("fecha_acontecimiento")
-  createdAt           DateTime       @default(now()) @map("created_at")
-  updatedAt           DateTime       @updatedAt @map("updated_at")
+  estado              ReportStatus @default(PENDIENTE)
+  titulo              String       @db.VarChar(150)
+  descripcion         String       @db.Text
+  fechaAcontecimiento DateTime     @map("fecha_acontecimiento")
+  createdAt           DateTime     @default(now()) @map("created_at")
+  updatedAt           DateTime     @updatedAt @map("updated_at")
 
-  usuario             User           @relation("UsuarioReportes", fields: [usuarioId], references: [id])
-  mascota             Pet?           @relation(fields: [mascotaId], references: [id])
-  ubicacion           Location       @relation(fields: [ubicacionId], references: [id])
-  imagenes            Image[]
-  evidencias          Evidence[]
-  historial           ReportHistory[]
+  usuario    User            @relation("UsuarioReportes", fields: [usuarioId], references: [id])
+  mascota    Pet?            @relation(fields: [mascotaId], references: [id], onDelete: Cascade)
+  ubicacion  Location        @relation(fields: [ubicacionId], references: [id])
+  imagenes   Image[]
+  evidencias Evidence[]
+  historial  ReportHistory[]
 
   @@map("reportes")
 }
@@ -131,7 +132,7 @@ model Image {
   publicId  String   @map("public_id") @db.VarChar(255)
   createdAt DateTime @default(now()) @map("created_at")
 
-  reporte   Report   @relation(fields: [reporteId], references: [id], onDelete: Cascade)
+  reporte Report @relation(fields: [reporteId], references: [id], onDelete: Cascade)
 
   @@map("imagenes")
 }
@@ -145,8 +146,8 @@ model Evidence {
   estado      EvidenceStatus @default(PENDIENTE)
   createdAt   DateTime       @default(now()) @map("created_at")
 
-  reporte     Report         @relation(fields: [reporteId], references: [id], onDelete: Cascade)
-  usuario     User           @relation("UsuarioEvidencias", fields: [usuarioId], references: [id])
+  reporte Report @relation(fields: [reporteId], references: [id], onDelete: Cascade)
+  usuario User   @relation("UsuarioEvidencias", fields: [usuarioId], references: [id])
 
   @@map("evidencias")
 }
@@ -159,7 +160,7 @@ model ReportHistory {
   observacion    String?      @db.Text
   createdAt      DateTime     @default(now()) @map("created_at")
 
-  reporte        Report       @relation(fields: [reporteId], references: [id], onDelete: Cascade)
+  reporte Report @relation(fields: [reporteId], references: [id], onDelete: Cascade)
 
   @@map("historial_reportes")
 }
@@ -174,8 +175,8 @@ model Shelter {
   sitioWeb    String?  @map("sitio_web") @db.VarChar(255)
   createdAt   DateTime @default(now()) @map("created_at")
 
-  usuario     User     @relation(fields: [usuarioId], references: [id])
-  ubicacion   Location @relation(fields: [ubicacionId], references: [id])
+  usuario   User     @relation(fields: [usuarioId], references: [id])
+  ubicacion Location @relation(fields: [ubicacionId], references: [id])
 
   @@map("refugios")
 }
@@ -189,8 +190,8 @@ model Veterinary {
   horario      String   @db.VarChar(100)
   createdAt    DateTime @default(now()) @map("created_at")
 
-  usuario      User     @relation(fields: [usuarioId], references: [id])
-  ubicacion    Location @relation(fields: [ubicacionId], references: [id])
+  usuario   User     @relation(fields: [usuarioId], references: [id])
+  ubicacion Location @relation(fields: [ubicacionId], references: [id])
 
   @@map("veterinarias")
 }
@@ -203,7 +204,7 @@ model Notification {
   leida     Boolean  @default(false)
   createdAt DateTime @default(now()) @map("created_at")
 
-  usuario   User     @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
+  usuario User @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
 
   @@map("notificaciones")
 }
